@@ -1,0 +1,55 @@
+#!/bin/bash
+cd /app
+
+# Check if the packages destination is a directory
+if [ ! -d "/app/packages" ]; then
+	echo -e "\033[1;31mDestination directory does not exist\033[0m"
+	exit 1
+fi
+
+# Check if the packages destination is empty
+if [ ! -z "$(ls -A /app/packages)" ]; then
+	echo -e "\033[1;31mDestination directory is not empty\033[0m"
+	exit 1
+fi
+
+# Announce that the build process is starting
+figlet provoice
+echo -e "\033[1;32mProVoice packages build environment for Kamailio using Docker\033[0m\n"
+echo "MediaServe International B.V."
+echo "https://github.com/ProVoice"
+printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
+
+# Build Kamailio packages
+
+cd /app/kamailio
+
+# Use the kamailio debian template for Ubuntu Focal
+cp -r ./pkg/kamailio/deb/focal debian
+
+# Install the dependencies
+apt update
+mk-build-deps
+apt install -f -y ./kamailio-build-deps_*.deb
+rm ./kamailio-build-deps_*.deb
+
+# Create the updated version
+DEBEMAIL="Thomas Lobker <thomas@mediaserve.nl>" dch -l+provoice "Release for ProVoice on Ubuntu 20.04 LTS"
+DEBEMAIL="Thomas Lobker <thomas@mediaserve.nl>" dch -r ""
+
+# Build the source and packages files
+debuild -i -us -uc
+
+# Copy the debian files to the destination
+rsync -Sxt \
+ --exclude README.md \
+ --exclude LICENSE \
+ --exclude Dockerfile \
+ --exclude build-packages \
+ --exclude kamailio \
+ --exclude packages \
+/app/* /app/packages
+
+# Announce that the build process is done
+printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
+echo -e "\033[1;32mBuild process has completed\033[0m"
