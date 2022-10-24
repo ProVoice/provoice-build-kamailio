@@ -24,6 +24,9 @@ printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
 
 cd /app/kamailio
 
+# Apply patches
+find /app/patches -name '*.patch' -exec git apply '{}' \;
+
 # Use the kamailio debian template for Ubuntu Focal
 cp -r ./pkg/kamailio/deb/focal debian
 
@@ -34,7 +37,7 @@ apt install -f -y ./kamailio-build-deps_*.deb
 rm ./kamailio-build-deps_*.deb
 
 # Create the updated version
-DEBEMAIL="Thomas Lobker <thomas@mediaserve.nl>" dch -l+provoice "Release for ProVoice on Ubuntu 20.04 LTS"
+DEBEMAIL="Thomas Lobker <thomas@mediaserve.nl>" dch -l+provoice "Release for ProVoice on Ubuntu 22.04 LTS"
 DEBEMAIL="Thomas Lobker <thomas@mediaserve.nl>" dch -r ""
 
 # Build the source and packages files
