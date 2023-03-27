@@ -15,6 +15,7 @@ git clone https://github.com/ProVoice/provoice-build-kamailio.git
 cd provoice-build-kamailio
 git submodule init
 git submodule update --remote
+( cd kamailio; git checkout 5.6.4 )
 sudo docker build -t provoice-build-kamailio .
 ```
 2. Create a directory for the packages
