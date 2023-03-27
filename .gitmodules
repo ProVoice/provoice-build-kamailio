@@ -1,4 +1,4 @@
 [submodule "kamailio"]
 	path = kamailio
 	url = https://github.com/ProVoice/kamailio
-	branch = 5.5
+	branch = master
