@@ -28,7 +28,7 @@ cd /app/kamailio
 find /app/patches -name '*.patch' -exec git apply '{}' \;
 
 # Use the kamailio debian template for Ubuntu Focal
-cp -r ./pkg/kamailio/deb/focal debian
+cp -r ./pkg/kamailio/deb/jammy debian
 
 # Install the dependencies
 apt update
@@ -37,7 +37,7 @@ apt install -f -y ./kamailio-build-deps_*.deb
 rm ./kamailio-build-deps_*.deb
 
 # Create the updated version
-DEBEMAIL="Thomas Lobker <thomas@mediaserve.nl>" dch -l+provoice "Release for ProVoice on Ubuntu 22.04 LTS"
+DEBEMAIL="Thomas Lobker <thomas@mediaserve.nl>" dch -l+provoice "Release for ProVoice on Ubuntu 24.04 LTS"
 DEBEMAIL="Thomas Lobker <thomas@mediaserve.nl>" dch -r ""
 
 # Build the source and packages files
